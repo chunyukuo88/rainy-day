@@ -4,10 +4,12 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/chunyukuo88/rainy-day/logger"
 	"github.com/chunyukuo88/rainy-day/models"
 )
 
 type MovieHandler struct {
+	logger logger.Logger
 }
 
 func (mh MovieHandler) GetTopMovies(w http.ResponseWriter, r *http.Request) {
@@ -34,6 +36,7 @@ func (mh MovieHandler) GetTopMovies(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	err := json.NewEncoder(w).Encode(movies)
 	if err != nil {
+		mh.logger.Error("Error: Failed to encode movies: %v", err)
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
