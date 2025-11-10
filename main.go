@@ -4,12 +4,16 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/chunyukuo88/rainy-day/handlers"
 	"github.com/chunyukuo88/rainy-day/logger"
 )
 
 func main() {
 	logInstance := initializeLogger()
 	http.Handle("/", http.FileServer(http.Dir("public")))
+
+	movieHandler := handlers.MovieHandler{}
+	http.HandleFunc("/api/movies/top", movieHandler.GetTopMovies)
 
 	const address = ":8080"
 
@@ -18,6 +22,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("Server failed: %v", err)
 		logInstance.Error("Server failed", err)
+		return
 	}
 
 	logInstance.Info("Server is available")
