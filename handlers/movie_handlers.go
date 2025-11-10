@@ -12,7 +12,17 @@ type MovieHandler struct {
 	logger logger.Logger
 }
 
-func (mh MovieHandler) GetTopMovies(w http.ResponseWriter, r *http.Request) {
+func (mh *MovieHandler) writeJSONResponse(w http.ResponseWriter, data any) {
+	w.Header().Set("Content-Type", "application/json")
+	err := json.NewEncoder(w).Encode(data)
+	if err != nil {
+		mh.logger.Error("Error: Failed to encode movies: %v", err)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+}
+
+func (mh *MovieHandler) GetTopMovies(w http.ResponseWriter, r *http.Request) {
 	movies := []models.Movie{
 		{
 			ID:          1,
@@ -33,11 +43,5 @@ func (mh MovieHandler) GetTopMovies(w http.ResponseWriter, r *http.Request) {
 			},
 		},
 	}
-	w.Header().Set("Content-Type", "application/json")
-	err := json.NewEncoder(w).Encode(movies)
-	if err != nil {
-		mh.logger.Error("Error: Failed to encode movies: %v", err)
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-		return
-	}
+	mh.writeJSONResponse(w, movies)
 }
