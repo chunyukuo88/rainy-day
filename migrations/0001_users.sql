@@ -1,32 +1,18 @@
 -- +goose Up
 -- +goose StatementBegin
 CREATE TABLE IF NOT EXISTS users (
-    id BIGSERIAL PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
-    bio TEXT,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-)
+    last_login TIMESTAMP,
+    time_created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    time_confirmed TIMESTAMP,
+    time_deleted TIMESTAMP
+);
 -- +goose StatementEnd
 
 -- +goose Down
 -- +goose StatementBegin
-DROP TABLE users;
+DROP TABLE IF EXISTS users;
 -- +goose StatementEnd
-
-
-
--- Base it off of this table definition:
--- CREATE TABLE "public"."users" (
---     "id" int4 NOT NULL DEFAULT nextval('users_id_seq'::regclass),
---     "name" text NOT NULL,
---     "email" text NOT NULL,
---     "password_hashed" text NOT NULL,
---     "last_login" timestamp,
---     "time_created" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
---     "time_confirmed" timestamp,
---     "time_deleted" timestamp,
---     PRIMARY KEY ("id")
--- );
